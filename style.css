@@ -1,0 +1,21 @@
+.display {
+    border: 2px solid black;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.numbers {
+    display: grid;
+    grid-template: 1fr 1fr 1fr/ 1fr 1fr 1fr;
+    gap: 5px;
+    margin: 10px;
+}
+
+.operator {
+    display: grid;
+    grid-template: 1fr 1fr / 1fr 1fr;
+    gap: 5px;
+    margin: 10px;
+}
