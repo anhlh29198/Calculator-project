@@ -1,21 +1,85 @@
-.display {
-    border: 2px solid black;
-    height: 50px;
+body {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100vh;
+}
+
+.calculator {
+    display: flex;
+    flex-direction: column;
+    min-height: 75vh;
+    min-width: 50vh;
+}
+
+.display {
+    flex: 1;
+    display: flex;
+    align-items: end;
+    border: 3px solid red;
+    min-height: 20px;
+    max-height: 60px;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    font-size: 2rem;
+}
+
+.buttons {
+    display: flex;
+    border-bottom: 3px solid black;
+    border-right: 3px solid black;
+    border-left: 3px solid black;
+    flex: 4;
+}
+
+.left {
+    display: flex;
+    flex-direction: column;
+    flex: 5;
 }
 
 .numbers {
     display: grid;
-    grid-template: 1fr 1fr 1fr/ 1fr 1fr 1fr;
-    gap: 5px;
-    margin: 10px;
+    grid-template: 1fr 1fr 1fr 1fr/ 1fr 1fr 1fr;
+    gap: 1px;
+    flex: 6;
+    margin: 5px;
 }
 
-.operator {
-    display: grid;
-    grid-template: 1fr 1fr / 1fr 1fr;
-    gap: 5px;
-    margin: 10px;
+.signs {
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+    gap: 1px;
+    flex: 1;
+
 }
+
+.isPressed {
+   background-color: gray; 
+}
+
+.isClickOn {
+    background-color: rgb(71, 70, 70);
+}
+
+.signs button {
+    flex: 1;
+}
+
+.actions {
+    display: flex;
+    gap: 1px;
+    margin: 5px;
+    flex: 1;
+}
+
+.actions button {
+    flex: 1;
+}
+

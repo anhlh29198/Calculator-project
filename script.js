@@ -1,73 +1,145 @@
-function add(n1, n2) {
-    return n1 + n2;
-}
+const add = (n1, n2) => n1 + n2;
+const subtract = (n1, n2) => n1 - n2;
+const multiply = (n1, n2) => n1 * n2;
+const divide = (n1, n2) => n2 === 0 ? "Infinity" : n1 / n2;
+const percentage = (n1, n2) => n2 === 0 ? "ERROR": `${(n1 / n2) * 100}%`;
 
-function subtract(n1, n2) {
-    return n1 - n2;
-}
+const operate = (n1, op, n2) => {
+    return op === "+" ? add(n1, n2)
+    : op === "-" ? subtract(n1, n2)
+    : op === "*" ? multiply(n1, n2)
+    : op === "/" ? divide(n1, n2)
+    : op === "%" ? percentage(n1, n2)
+    : 0;
+};
 
-function multiply(n1, n2) {
-    return n1 * n2;
-}
-
-function divide(n1, n2) {
-    (n2 === 0) ? "ERROR" : n1 / n2;
-}
-
-function operate(n1, operator, n2) {
-    switch(operator) {
-        case "plus":
-            return add(n1, n2);
-        case "minus":
-            return subtract(n1, n2);
-        case "time":
-            return multiply(n1, n2);
-        case "divide":
-            return divide(n1, n2);
-    }
-}
-
-const display = document.querySelector(".display");
-const btn = document.querySelectorAll(".numbers button");
-const btnSign = document.querySelectorAll(".operator button");
+const display = document.querySelector(".content");
+const btn = document.querySelectorAll("button");
+const btnNum = document.querySelectorAll(".numbers button");
+const btnSign = document.querySelectorAll(".signs button");
 const btnEqual = document.querySelector("#equal");
 const btnClear = document.querySelector("#clear");
+const btnDelete = document.querySelector("#delete");
 
 let n1;
-let n2 = 0;
-let operator;
-let operatorText;
-let sequence = "";
+let n2;
+let op;
+let isNumInput;
+let decimal;
+let sequence;
+let arrDisplay = [];
+let sign;
+let isActionBefore;
+display.textContent = "0";
 
-btn.forEach(button => button.addEventListener("click", function(e) {
-    display.textContent = `${e.target.innerText}`;
-    sequence += `${e.target.innerText}`;
-}) );
+btnNum.forEach(button => {
 
-btnSign.forEach(button => button.addEventListener("click", function(e) {
-    n1 = +sequence;
-    operator = e.target.id;
-    operatorText = ` ${e.target.innerText} `;
-    sequence += ` ${e.target.innerText} `;
-    display.textContent = operate(n1, operator, n2);
-    console.log(n1);
-    console.log(operator);
-}) );
+    button.addEventListener("click", (e) => {
+        //check if there's already a decimal on display
+        arrDisplay.includes(".") ? decimal = true : decimal = false;
+        if (decimal) if (e.target.innerText === ".") return;
 
-// btnEqual.addEventListener("click", () => {
-//     n2 = +(sequence).replace(`${n1}`+ operatorText, "");
-//     console.log(n2);
-//     display.textContent = operate(n1, operator, n2);
-//     sequence = display.textContent;
-//     console.log(display.textContent);
+        //hitting decimal after an operator should results "0."
+        if (e.target.innerText === ".") if (isActionBefore) {
+            display.textContent = "0.";
+            return;
+        }
 
-// });
+        arrDisplay.push(e.target.innerText);
+        display.textContent = arrDisplay.join("");
+        sequence = arrDisplay.join("");
+
+        isNumInput = true;
+        isActionBefore = false;
+
+    });
+});
+
+btnSign.forEach(button => {
+
+    button.addEventListener("click", (e) => {
+    
+        // to show a sign op being used
+        if (sign) sign.classList.remove("isPressed");
+        e.target.classList.toggle("isPressed");
+        sign = e.target;
+    
+        //only after a num1 and an op has been input and support chain operation (++, --, ...)
+        if ((op && isNumInput)) {
+            n2 = Number(sequence);
+            display.textContent = operate(n1, op, n2);
+            sequence = display.textContent;
+        }
+
+        //keep n1 if before is an action
+        if (!isActionBefore) n1 = Number(sequence);
+        op= e.target.id;
+        
+        arrDisplay = [];
+        isNumInput = false;
+        isActionBefore = true;
+    
+    });
+});
+
+btnEqual.addEventListener("click", () => {
+
+    if (sign) sign.classList.remove("isPressed");
+    n2 = Number(sequence);
+    //support (+=, -=, *=, /=)
+    if (isActionBefore || isNumInput) {
+        display.textContent = operate(n1, op, n2);
+        n1 = +display.textContent;
+    }
+
+    
+    arrDisplay = [];
+    isNumInput = false;
+    isActionBefore = true;
+
+});
 
 btnClear.addEventListener("click", () => {
-    display.textContent = "";
+
+    if (sign) sign.classList.remove("isPressed");
+    display.textContent = "0";
     sequence = "";
     n1 = 0;
     n2 = 0;
-    operator = "";
+    op= false;
+    arrDisplay = [];
+    isNumInput = false;
+    isActionBefore = true;
+
 });
 
+btnDelete.addEventListener("click", () => {
+
+    if (sign) sign.classList.remove("isPressed");
+    arrDisplay.pop();
+    display.textContent = arrDisplay.join("");
+    sequence = arrDisplay.join("");
+
+    if (!sequence) display.textContent = "0";
+
+    op = false;
+    isNumInput = false;
+    n1 = sequence;
+    isActionBefore = true;
+
+});
+
+//show which button is being clicked on
+btn.forEach(button => {
+    button.addEventListener("mousedown", (e) => {
+        e.target.classList.add("isClickOn");
+    });
+
+    button.addEventListener("mouseup", (e) => {
+        e.target.classList.remove("isClickOn");
+    });
+
+    button.addEventListener("mouseout", (e) => {
+        e.target.classList.remove("isClickOn");
+    });
+});
